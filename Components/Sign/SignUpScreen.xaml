@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/maui/global"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:Toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="Ixjok.Components.Sign.SignUpScreen"
+             x:DataType="SignUpViewModel"
+             Shell.NavBarIsVisible="False"
+             HideSoftInputOnTapped="True"
+             BackgroundColor="{StaticResource DimGrey}">
+    <ContentPage.Behaviors>
+        <Toolkit:StatusBarBehavior StatusBarColor="{StaticResource DimGrey}"
+                                   ApplyOn="OnPageNavigatedTo"
+                                   StatusBarStyle="LightContent"/>
+    </ContentPage.Behaviors>
+    <Grid RowDefinitions="90,*"
+          Padding="20,0">
+        <Image Source="arrow_back.png"
+               Grid.Row="0"
+               HorizontalOptions="Start"
+               VerticalOptions="Center"
+               WidthRequest="36"
+               HeightRequest="36">
+            <Image.Behaviors>
+                <Toolkit:IconTintColorBehavior TintColor="{StaticResource PeachFuzz}"/>
+            </Image.Behaviors>
+            <Image.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding GotoBackCommand}"/>
+            </Image.GestureRecognizers>
+        </Image>
+        <!-- Sign Button -->
+        <FlexLayout Grid.Row="1"
+                    JustifyContent="Center"
+                    Direction="Column"
+                    AlignItems="Stretch">
+            <!-- Logo -->
+            <Image Source="logo.png"
+                   FlexLayout.AlignSelf="Center"
+                   WidthRequest="46"
+                   Margin="0,0,0,10"
+                   HeightRequest="46">
+                <Image.Behaviors>
+                    <Toolkit:IconTintColorBehavior TintColor="{StaticResource PeachFuzz}"/>
+                </Image.Behaviors>
+            </Image>
+            <!-- Title -->
+            <Label FontSize="32"
+                   FontFamily="SB"
+                   Margin="0,0,0,10"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   FontAttributes="Bold"
+                   TextTransform="Uppercase"
+                   TextColor="{StaticResource PeachFuzz}"
+                   VerticalTextAlignment="Center"
+                   Text="Sign Up"/>
+            <!-- Description -->
+            <VerticalStackLayout Margin="20,20,20,40">
+                <!-- User Name -->
+                <Border Stroke="Gray"
+                        x:Name="UB"
+                        StrokeThickness="2">
+                    <Border.Triggers>
+                        <MultiTrigger TargetType="Border">
+                            <MultiTrigger.Conditions>
+                                <BindingCondition Binding="{Binding IsFocused,Source={x:Reference FN}}"
+                                                  Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Stroke"
+                                    Value="{StaticResource PeachFuzz}"/>
+                        </MultiTrigger>
+                        <MultiTrigger TargetType="Border">
+                            <MultiTrigger.Conditions>
+                                <BindingCondition Binding="{Binding IsFocused,Source={x:Reference FN}}"
+                                                  Value="False"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Stroke"
+                                    Value="Gray"/>
+                        </MultiTrigger>
+                    </Border.Triggers>
+                    <Border.StrokeShape>
+                        <!-- Container -->
+                        <RoundRectangle CornerRadius="10,10,0,0"/>
+                    </Border.StrokeShape>
+                    <HorizontalStackLayout Padding="10"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Fill">
+                        <FillEntry x:Name="FN"
+                                   Text="{Binding UserName}"
+                                   WidthRequest="250"
+                                   HorizontalOptions="Fill"
+                                   Keyboard="Text"
+                                   Placeholder="User Name"
+                                   FontFamily="LR"
+                                   FontSize="16">
+                            <FillEntry.Behaviors>
+                                <Toolkit:TextValidationBehavior MinimumLength="1"
+                                                                MaximumLength="100"
+                                                                IsValid="{Binding IsValid,Mode=TwoWay}"
+                                                                x:Name="FBP"/>
+                            </FillEntry.Behaviors>
+                        </FillEntry>
+                        <Image Source="user_mini.png"
+                               WidthRequest="32"
+                               HeightRequest="32">
+                            <Image.Behaviors>
+                                <Toolkit:IconTintColorBehavior TintColor="{StaticResource Gray500}"/>
+                            </Image.Behaviors>
+                        </Image>
+                    </HorizontalStackLayout>
+                </Border>
+                <!-- Password -->
+                <Border Stroke="Gray"
+                        StrokeThickness="2">
+                    <Border.Triggers>
+                        <MultiTrigger TargetType="Border">
+                            <MultiTrigger.Conditions>
+                                <BindingCondition Binding="{Binding IsFocused,Source={x:Reference FP}}"
+                                                  Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Stroke"
+                                    Value="{StaticResource PeachFuzz}"/>
+                        </MultiTrigger>
+                        <MultiTrigger TargetType="Border">
+                            <MultiTrigger.Conditions>
+                                <BindingCondition Binding="{Binding IsFocused,Source={x:Reference FP}}"
+                                                  Value="False"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Stroke"
+                                    Value="Gray"/>
+                        </MultiTrigger>
+                    </Border.Triggers>
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="0,0,10,10"/>
+                    </Border.StrokeShape>
+                    <!-- Container -->
+                    <HorizontalStackLayout Padding="10"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Fill">
+                        <!-- Entry Password -->
+                        <FillEntry x:Name="FP"
+                                   Text="{Binding Password}"
+                                   WidthRequest="250"
+                                   HorizontalOptions="Fill"
+                                   IsPassword="False"
+                                   Placeholder="Password"
+                                   FontFamily="LR"
+                                   FontSize="16"
+                                   TextColor="{StaticResource Gray100}">
+                            <FillEntry.Behaviors>
+                                <Toolkit:TextValidationBehavior MinimumLength="8"
+                                                                IsValid="{Binding IsValid,Mode=TwoWay}"
+                                                                x:Name="FBN"/>
+                            </FillEntry.Behaviors>
+                        </FillEntry>
+                        <Image Source="password.png"
+                               WidthRequest="32"
+                               HeightRequest="32">
+                            <Image.Behaviors>
+                                <Toolkit:IconTintColorBehavior TintColor="{StaticResource Gray500}"/>
+                            </Image.Behaviors>
+                        </Image>
+                    </HorizontalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+            <!-- Options -->
+            <Label FontSize="14"
+                   FontFamily="LB"
+                   FontAttributes="Bold"
+                   MaximumWidthRequest="300"
+                   Opacity="0.7"
+                   HorizontalOptions="Center"
+                   LineBreakMode="WordWrap"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Center"
+                   Margin="0,0,0,40"
+                   Text="Gracias por aceptar los términos y condiciones"/>
+            <!-- Sign Button -->
+            <Button MaximumWidthRequest="350"
+                    Text="Sign Up"
+                    Command="{Binding SignUpCommand}"
+                    TextColor="{StaticResource DimGrey}"
+                    FontFamily="LB"
+                    FontSize="22"
+                    CornerRadius="60"
+                    Padding="0,20"
+                    HorizontalOptions="Fill">
+                <Button.Background>
+                    <LinearGradientBrush StartPoint="0,0"
+                                         EndPoint="1,1">
+                        <GradientStop Color="{StaticResource PeachFuzz}"
+                                      Offset="0.4"/>
+                        <GradientStop Color="{StaticResource PowderBlush}"
+                                      Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+        </FlexLayout>
+    </Grid>
+</ContentPage>

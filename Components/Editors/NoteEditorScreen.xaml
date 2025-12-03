@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/maui/global"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:Toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="Ixjok.Components.Editors.NoteEditorScreen"
+             Shell.NavBarIsVisible="False"
+             HideSoftInputOnTapped="True"
+             x:DataType="EditorNoteViewModel"
+             BackgroundColor="{StaticResource DimGrey}"
+             Shell.TabBarIsVisible="False">
+    <ContentPage.Behaviors>
+        <Toolkit:StatusBarBehavior StatusBarColor="Transparent"
+                                   ApplyOn="OnPageNavigatedTo"
+                                   StatusBarStyle="LightContent"/>
+    </ContentPage.Behaviors>
+    <Grid RowDefinitions="90,*"
+          Padding="20,0,20,0">
+        <!-- Tools -->
+        <FlexLayout Grid.Row="0"
+                    Direction="Row"
+                    AlignItems="Center"
+                    JustifyContent="SpaceBetween">
+            <Image Source="arrow_back.png"
+                   HeightRequest="32"
+                   WidthRequest="32">
+                <Image.Behaviors>
+                    <Toolkit:IconTintColorBehavior TintColor="{StaticResource PeachFuzz}"/>
+                </Image.Behaviors>
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding BackCommand}"/>
+                </Image.GestureRecognizers>
+            </Image>
+            <Image Source="check.png"
+                   HeightRequest="32"
+                   WidthRequest="32">
+                <Image.Behaviors>
+                    <Toolkit:IconTintColorBehavior TintColor="{StaticResource PeachFuzz}"/>
+                </Image.Behaviors>
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding SaveCommand}"/>
+                </Image.GestureRecognizers>
+            </Image>
+        </FlexLayout>
+        <!-- Content -->
+        <VerticalStackLayout Spacing="10"
+                             Grid.Row="1"
+                             VerticalOptions="Fill">
+            <FillEntry Text="{Binding Title}"
+                       Placeholder="Titulo"
+                       x:Name="TitleEntry"
+                       HorizontalTextAlignment="Start"
+                       VerticalTextAlignment="Center"
+                       FontFamily="SS"
+                       FontSize="26">
+            </FillEntry>
+            <FillEditor Text="{Binding Content}"
+                        x:Name="TitleEditor"
+                        Placeholder="Redacta Tu Pensamientos"
+                        HorizontalTextAlignment="Start"
+                        VerticalOptions="Fill"
+                        VerticalTextAlignment="Start"
+                        FontFamily="LR"
+                        HeightRequest="700"
+                        FontSize="16"/>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

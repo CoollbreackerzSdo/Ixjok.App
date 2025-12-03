@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/maui/global"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:Toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="Ixjok.Components.Principal.NoteScreen"
+             x:DataType="NoteViewModel"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="{StaticResource DimGrey}">
+    <ContentPage.Behaviors>
+        <Toolkit:StatusBarBehavior StatusBarColor="{StaticResource DimGrey}"
+                                   ApplyOn="OnPageNavigatedTo"
+                                   StatusBarStyle="LightContent"/>
+    </ContentPage.Behaviors>
+    <Grid Padding="20"
+          RowDefinitions="auto,*">
+        <!-- Header -->
+        <FlexLayout Grid.Row="0"
+                    Direction="Row"
+                    AlignItems="Center"
+                    Margin="0,0,0,20"
+                    JustifyContent="SpaceBetween"
+                    IsEnabled="{Binding IsNotEmpty}"
+                    IsVisible="{Binding IsNotEmpty}">
+            <!-- Logo -->
+            <HorizontalStackLayout>
+                <Image Source="logo.png"
+                       HorizontalOptions="End"
+                       VerticalOptions="Center"
+                       WidthRequest="36"
+                       HeightRequest="36">
+                    <Image.Behaviors>
+                        <Toolkit:IconTintColorBehavior TintColor="{StaticResource PeachFuzz}"/>
+                    </Image.Behaviors>
+                </Image>
+                <Label FontSize="32"
+                       FontFamily="SB"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center"
+                       TextTransform="Uppercase"
+                       TextColor="{StaticResource PeachFuzz}"
+                       VerticalTextAlignment="Center"
+                       Text="Ixjok"/>
+            </HorizontalStackLayout>
+            <!-- Sign In -->
+            <Image Source="{Binding CloudStatusImage}"
+                   HorizontalOptions="End"
+                   VerticalOptions="Center"
+                   WidthRequest="36"
+                   HeightRequest="36">
+                <Image.Behaviors>
+                    <Toolkit:IconTintColorBehavior TintColor="{StaticResource PeachFuzz}"/>
+                </Image.Behaviors>
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding SignCommand}"/>
+                </Image.GestureRecognizers>
+            </Image>
+        </FlexLayout>
+        <!-- Collection  -->
+        <RefreshView Grid.Row="1"
+                     Command="{Binding RefreshCommand}"
+                     RefreshColor="{StaticResource PeachFuzz}"
+                     IsRefreshing="{Binding IsRefreshEnable}"
+                     BackgroundColor="#FF231F27"
+                     IsRefreshEnabled="{Binding IsNotEmpty}"
+                     HorizontalOptions="Center"
+                     VerticalOptions="Fill">
+            <CollectionView ItemSizingStrategy="MeasureFirstItem"
+                            ItemsSource="{Binding Notes}">
+                <!-- Element Design -->
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="NoteModel">
+                        <Border HeightRequest="300"
+                                Padding="0"
+                                StrokeThickness="0"
+                                BackgroundColor="{StaticResource PeachFuzz}"
+                                WidthRequest="180">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="10"/>
+                            </Border.StrokeShape>
+                            <!-- Element Container -->
+                            <Border HorizontalOptions="Fill"
+                                    StrokeThickness="0"
+                                    BackgroundColor="#FF2F2A35"
+                                    Margin="0,0,0,5"
+                                    Padding="20,0,0,20"
+                                    VerticalOptions="Fill">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10,10,10,60"/>
+                                </Border.StrokeShape>
+                                <!-- Layout -->
+                                <Grid RowSpacing="4"
+                                      RowDefinitions="40,auto,*,50">
+                                    <!-- Options -->
+                                    <Border Grid.Row="0"
+                                            VerticalOptions="Center"
+                                            StrokeThickness="0"
+                                            BackgroundColor="{StaticResource PeachFuzz}"
+                                            HeightRequest="40"
+                                            HorizontalOptions="End">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="0,0,60,0"/>
+                                        </Border.StrokeShape>
+                                        <HorizontalStackLayout Spacing="10"
+                                                               Margin="0,10"
+                                                               Padding="10,0"
+                                                               HorizontalOptions="End"
+                                                               VerticalOptions="Center">
+                                            <Image Source="edit.png"
+                                                   WidthRequest="22"
+                                                   HeightRequest="22">
+                                                <Image.Behaviors>
+                                                    <Toolkit:IconTintColorBehavior TintColor="White"/>
+                                                </Image.Behaviors>
+                                                <Image.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type NoteViewModel}},Path=GotoUpdateCommand}"
+                                                                          CommandParameter="{Binding .}"/>
+                                                </Image.GestureRecognizers>
+                                            </Image>
+                                            <Image Source="cancel.png"
+                                                   WidthRequest="22"
+                                                   HeightRequest="22">
+                                                <Image.Behaviors>
+                                                    <Toolkit:IconTintColorBehavior TintColor="White"/>
+                                                </Image.Behaviors>
+                                                <Image.GestureRecognizers>
+                                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type NoteViewModel}},Path=DeleteCommand}"
+                                                                          CommandParameter="{Binding .}"/>
+                                                </Image.GestureRecognizers>
+                                            </Image>
+                                        </HorizontalStackLayout>
+                                    </Border>
+                                    <!-- Tile -->
+                                    <Label Margin="0,10,20,0"
+                                           Text="{Binding Title}"
+                                           Grid.Row="1"
+                                           FontFamily="SS"
+                                           FontSize="22"
+                                           MaxLines="2"
+                                           VerticalTextAlignment="Start"
+                                           HorizontalTextAlignment="Justify"
+                                           LineBreakMode="TailTruncation"/>
+                                    <!-- Content -->
+                                    <Label Margin="0,10,20,0"
+                                           Grid.Row="2"
+                                           FontFamily="LB"
+                                           Text="{Binding Content}"
+                                           VerticalTextAlignment="Start"
+                                           HorizontalTextAlignment="Start"
+                                           LineBreakMode="TailTruncation"
+                                           HorizontalOptions="Fill"
+                                           MaxLines="10"
+                                           Opacity="0.5"
+                                           FontSize="16"/>
+                                    <!-- Creation -->
+                                    <Label Margin="0,0,20,0"
+                                           Grid.Row="3"
+                                           Text="{Binding Registration,Converter={RegistrationFormatConvert}}"
+                                           FontFamily="LL"
+                                           VerticalTextAlignment="End"
+                                           Opacity="0.4"
+                                           FontSize="12"/>
+                                </Grid>
+                            </Border>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <!-- Layout -->
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Span="2"
+                                     Orientation="Vertical"
+                                     SnapPointsAlignment="Center"
+                                     VerticalItemSpacing="10"
+                                     HorizontalItemSpacing="10"/>
+                </CollectionView.ItemsLayout>
+                <!-- Empty View -->
+                <CollectionView.EmptyView>
+                    <FlexLayout JustifyContent="Center"
+                                AlignItems="Center"
+                                Direction="Column">
+                        <FlexLayout.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GotoAddCommand}"/>
+                        </FlexLayout.GestureRecognizers>
+                        <!-- Logo -->
+                        <Image Source="logo.png"
+                               HorizontalOptions="Center"
+                               WidthRequest="86"
+                               HeightRequest="86">
+                            <Image.Behaviors>
+                                <Toolkit:IconTintColorBehavior TintColor="{StaticResource PeachFuzz}"/>
+                            </Image.Behaviors>
+                        </Image>
+                        <!-- App Title -->
+                        <Label FontSize="32"
+                               FontFamily="SB"
+                               Margin="0,0,0,10"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               FontAttributes="Bold"
+                               TextTransform="Uppercase"
+                               TextColor="{StaticResource PeachFuzz}"
+                               VerticalTextAlignment="Center"
+                               Text="Ixjok"/>
+                        <!-- Description -->
+                        <Label FontSize="18"
+                               FontFamily="LB"
+                               HorizontalOptions="Center"
+                               Opacity="0.6"
+                               Margin="0,0,0,2"
+                               VerticalTextAlignment="Center"
+                               Text="Donde escribir tus anotaciones sin contenerte"/>
+                        <!-- Options -->
+                        <Label FontSize="14"
+                               FontFamily="LR"
+                               MaximumWidthRequest="300"
+                               Opacity="0.4"
+                               HorizontalOptions="Center"
+                               LineBreakMode="WordWrap"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"
+                               Margin="0,0,0,20"
+                               Text="Pulsa la pantalla para escribir tu primera nota o pulsa la nube para iniciar o cerrar session"/>
+                        <!-- Cloud -->
+                        <Image Source="{Binding CloudStatusImage}"
+                               HorizontalOptions="Center"
+                               Opacity="0.4"
+                               WidthRequest="36"
+                               HeightRequest="36">
+                            <Image.Behaviors>
+                                <Toolkit:IconTintColorBehavior TintColor="{StaticResource PeachFuzz}"/>
+                            </Image.Behaviors>
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SignCommand}"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </FlexLayout>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+        <!-- More -->
+        <ImageButton ZIndex="1"
+                     Source="plus.png"
+                     Padding="10"
+                     Grid.Row="1"
+                     IsVisible="{Binding IsNotEmpty}"
+                     Command="{Binding GotoAddCommand}"
+                     HorizontalOptions="End"
+                     VerticalOptions="End"
+                     Margin="0,0,10,50"
+                     CornerRadius="10"
+                     BackgroundColor="{StaticResource PeachFuzz}"
+                     HeightRequest="50"
+                     WidthRequest="50">
+            <ImageButton.Behaviors>
+                <Toolkit:IconTintColorBehavior TintColor="White"/>
+            </ImageButton.Behaviors>
+        </ImageButton>
+    </Grid>
+</ContentPage>
