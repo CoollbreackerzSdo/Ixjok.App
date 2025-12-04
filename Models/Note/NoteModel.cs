@@ -1,6 +1,3 @@
-
-using CommunityToolkit.Mvvm.ComponentModel;
-
 namespace Ixjok.Models.Note;
 
 public sealed partial class NoteModel : ObservableObject, INote

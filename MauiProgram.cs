@@ -16,12 +16,7 @@ public static class MauiProgram
                 fonts.AddFont("Lato-Regular.ttf", "LR");
                 fonts.AddFont("StackSansNotch-Bold.ttf", "SB");
                 fonts.AddFont("StackSansNotch-SemiBold.ttf", "SS");
-            }).UseMauiCommunityToolkit().ConfigureMauiHandlers(op =>
-            {
-#if ANDROID
-                op.AddHandler<Shell,ShellTrackerRenderer>();
-#endif
-            })
+            }).UseMauiCommunityToolkit()
             .ApplyConfiguration()
             .Services
             .AddScreens()

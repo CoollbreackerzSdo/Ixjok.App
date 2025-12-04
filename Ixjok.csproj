@@ -40,7 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Components\Controls\" />
-    <Folder Include="Platforms\Android\Handlers\" />
     <Folder Include="Services\" />
     <Folder Include="Services\Auth\" />
     <Folder Include="Services\Media\" />

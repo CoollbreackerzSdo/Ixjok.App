@@ -8,7 +8,7 @@ global using Ixjok.Services.Navigation;
 global using Ixjok.Components.Editors;
 global using Ixjok.Services.Media;
 global using CommunityToolkit.Mvvm.Input;
-global using Ixjok.Tools;
+global using Ixjok.Tools.Common.Models;
 global using Ixjok.Tools.Result;
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/dotnet/maui/global", "Ixjok.Pages")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/dotnet/maui/global", "Ixjok.Components")]
