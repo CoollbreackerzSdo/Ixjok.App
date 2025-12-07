@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace Ixjok;
 
@@ -9,6 +10,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseSkiaSharp()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("Lato-Bold.ttf", "LB");
@@ -23,7 +25,7 @@ public static class MauiProgram
             .AddAuthentication()
             .AddViewModels()
             .AddNavigation()
-            .AddRepositories()
+            .AddStorages()
             .AddMediaServices()
             .AddSingleton(op => new HttpClient { BaseAddress = new("https://ixjok.runasp.net/") });
 #if DEBUG
