@@ -1,6 +1,8 @@
+global using KeyId = Ixjok.Tools.Common.Models.EntityKey<System.Guid>;
 global using CommunityToolkit.Maui;
 global using CommunityToolkit.Mvvm;
 global using Ixjok;
+global using Ixjok.Helpers;
 global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Maui.Alerts;
 global using Ixjok.Services.Repository;
@@ -19,3 +21,4 @@ global using Ixjok.Tools.Result;
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/dotnet/maui/global", "Ixjok.Components.Sign")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/dotnet/maui/global", "Ixjok.Models.Note")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/dotnet/maui/global", "Ixjok.Models.Student")]
+[assembly: XmlnsDefinition("http://schemas.microsoft.com/dotnet/maui/global", "Ixjok.Components.Behaviors")]
