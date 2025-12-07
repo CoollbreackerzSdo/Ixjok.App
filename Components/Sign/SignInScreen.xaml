@@ -82,20 +82,31 @@
                         <!-- Container -->
                         <RoundRectangle CornerRadius="10,10,0,0"/>
                     </Border.StrokeShape>
-                    <HorizontalStackLayout Padding="10"
-                                           VerticalOptions="Center"
-                                           HorizontalOptions="Fill">
+                    <!-- User Name -->
+                    <FlexLayout Direction="Row"
+                                JustifyContent="SpaceBetween"
+                                AlignItems="Center"
+                                Padding="10"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Fill">
                         <FillEntry x:Name="FN"
-                                   Text="{Binding UserName}"
+                                   Text="{Binding Request.UserName}"
+                                   Margin="0,20"
                                    WidthRequest="250"
                                    HorizontalOptions="Fill"
+                                   VerticalOptions="Fill"
                                    Keyboard="Text"
                                    Placeholder="User Name"
-                                   FontFamily="LR"
+                                   FontFamily="LB"
                                    FontSize="16">
                             <FillEntry.Behaviors>
-                                <Toolkit:TextValidationBehavior MinimumLength="8"
-                                                                x:Name="FBP"/>
+                                <!-- Validator -->
+                                <TextValidatorBehavior IsValid="{Binding IsValid}"
+                                                       ValidColor="{StaticResource Gray500}"
+                                                       x:Name="TVB"
+                                                       MinLength="1"
+                                                       MaxLength="50"
+                                                       InValidColor="#FFFC8F64"/>
                             </FillEntry.Behaviors>
                         </FillEntry>
                         <Image Source="user_mini.png"
@@ -105,7 +116,7 @@
                                 <Toolkit:IconTintColorBehavior TintColor="{StaticResource Gray500}"/>
                             </Image.Behaviors>
                         </Image>
-                    </HorizontalStackLayout>
+                    </FlexLayout>
                 </Border>
                 <!-- Password -->
                 <Border Stroke="Gray"
@@ -129,25 +140,33 @@
                         </MultiTrigger>
                     </Border.Triggers>
                     <Border.StrokeShape>
+                        <!-- Container -->
                         <RoundRectangle CornerRadius="0,0,10,10"/>
                     </Border.StrokeShape>
-                    <!-- Container -->
-                    <HorizontalStackLayout Padding="10"
-                                           VerticalOptions="Center"
-                                           HorizontalOptions="Fill">
+                    <!-- Password -->
+                    <FlexLayout Direction="Row"
+                                JustifyContent="SpaceBetween"
+                                AlignItems="Center"
+                                Padding="10"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Fill">
                         <!-- Entry Password -->
                         <FillEntry x:Name="FP"
-                                   Text="{Binding Password}"
+                                   Text="{Binding Request.Password}"
+                                   Margin="0,20"
                                    WidthRequest="250"
                                    HorizontalOptions="Fill"
-                                   IsPassword="False"
+                                   VerticalOptions="Fill"
+                                   Keyboard="Text"
                                    Placeholder="Password"
-                                   FontFamily="LR"
-                                   FontSize="16"
-                                   TextColor="{StaticResource Gray100}">
+                                   FontFamily="LB"
+                                   FontSize="16">
                             <FillEntry.Behaviors>
-                                <Toolkit:TextValidationBehavior MinimumLength="8"
-                                                                x:Name="FBN"/>
+                                <!-- Validator -->
+                                <PasswordValidatorBehavior IsValid="{Binding IsValid}"
+                                                           x:Name="TVP"
+                                                           ValidColor="{StaticResource Gray500}"
+                                                           InValidColor="#FFFC8F64"/>
                             </FillEntry.Behaviors>
                         </FillEntry>
                         <Image Source="password.png"
@@ -157,13 +176,13 @@
                                 <Toolkit:IconTintColorBehavior TintColor="{StaticResource Gray500}"/>
                             </Image.Behaviors>
                         </Image>
-                    </HorizontalStackLayout>
+                    </FlexLayout>
                 </Border>
             </VerticalStackLayout>
             <!-- Loas -->
             <Label FontSize="12"
                    HorizontalTextAlignment="End"
-                   Margin="20,4,20,40"
+                   Margin="0,4,20,40"
                    FontAttributes="Bold"
                    TextColor="{StaticResource Gray500}"
                    Text="Haz Olvidado tu contraseña?"
@@ -178,26 +197,6 @@
                     CornerRadius="60"
                     Padding="0,20"
                     HorizontalOptions="Fill">
-                <Button.Triggers>
-                    <MultiTrigger TargetType="Button">
-                        <MultiTrigger.Conditions>
-                            <BindingCondition Binding="{Binding IsValid,Source={x:Reference FBN}}"
-                                              Value="True"/>
-                            <BindingCondition Binding="{Binding IsValid,Source={x:Reference FBP}}"
-                                              Value="True"/>
-                        </MultiTrigger.Conditions>
-                        <Setter Property="IsEnabled"
-                                Value="True"/>
-                    </MultiTrigger>
-                    <MultiTrigger TargetType="Button">
-                        <MultiTrigger.Conditions>
-                            <BindingCondition Binding="{Binding IsValid,Source={x:Reference FBN}}"
-                                              Value="False"/>
-                        </MultiTrigger.Conditions>
-                        <Setter Property="IsEnabled"
-                                Value="False"/>
-                    </MultiTrigger>
-                </Button.Triggers>
                 <Button.Background>
                     <LinearGradientBrush StartPoint="0,0"
                                          EndPoint="1,1">

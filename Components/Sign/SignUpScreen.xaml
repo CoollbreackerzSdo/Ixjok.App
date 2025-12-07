@@ -81,22 +81,32 @@
                         <!-- Container -->
                         <RoundRectangle CornerRadius="10,10,0,0"/>
                     </Border.StrokeShape>
-                    <HorizontalStackLayout Padding="10"
-                                           VerticalOptions="Center"
-                                           HorizontalOptions="Fill">
+                    <FlexLayout Direction="Row"
+                                JustifyContent="SpaceBetween"
+                                AlignItems="Center"
+                                Padding="10"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Fill">
+                        <!-- Entry Name -->
                         <FillEntry x:Name="FN"
-                                   Text="{Binding UserName}"
+                                   Text="{Binding Request.UserName}"
+                                   TextColor="{StaticResource Gray500}"
+                                   Margin="0,20"
                                    WidthRequest="250"
                                    HorizontalOptions="Fill"
+                                   VerticalOptions="Fill"
                                    Keyboard="Text"
                                    Placeholder="User Name"
-                                   FontFamily="LR"
+                                   FontFamily="LB"
                                    FontSize="16">
                             <FillEntry.Behaviors>
-                                <Toolkit:TextValidationBehavior MinimumLength="1"
-                                                                MaximumLength="100"
-                                                                IsValid="{Binding IsValid,Mode=TwoWay}"
-                                                                x:Name="FBP"/>
+                                <!-- Validator -->
+                                <TextValidatorBehavior IsValid="{Binding IsValid}"
+                                                       ValidColor="{StaticResource Gray500}"
+                                                       x:Name="TVB"
+                                                       MinLength="1"
+                                                       MaxLength="50"
+                                                       InValidColor="#FFFC8F64"/>
                             </FillEntry.Behaviors>
                         </FillEntry>
                         <Image Source="user_mini.png"
@@ -106,7 +116,67 @@
                                 <Toolkit:IconTintColorBehavior TintColor="{StaticResource Gray500}"/>
                             </Image.Behaviors>
                         </Image>
-                    </HorizontalStackLayout>
+                    </FlexLayout>
+                </Border>
+                <!-- Email -->
+                <Border Stroke="Gray"
+                        StrokeThickness="2">
+                    <Border.Triggers>
+                        <MultiTrigger TargetType="Border">
+                            <MultiTrigger.Conditions>
+                                <BindingCondition Binding="{Binding IsFocused,Source={x:Reference FE}}"
+                                                  Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Stroke"
+                                    Value="{StaticResource PeachFuzz}"/>
+                        </MultiTrigger>
+                        <MultiTrigger TargetType="Border">
+                            <MultiTrigger.Conditions>
+                                <BindingCondition Binding="{Binding IsFocused,Source={x:Reference FE}}"
+                                                  Value="False"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Stroke"
+                                    Value="Gray"/>
+                        </MultiTrigger>
+                    </Border.Triggers>
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="0"/>
+                    </Border.StrokeShape>
+                    <!-- Container -->
+                    <FlexLayout Direction="Row"
+                                JustifyContent="SpaceBetween"
+                                AlignItems="Center"
+                                Padding="10"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Fill">
+                        <!-- Entry Email -->
+                        <FillEntry x:Name="FE"
+                                   Text="{Binding Request.Email}"
+                                   TextColor="{StaticResource Gray500}"
+                                   Margin="0,20"
+                                   WidthRequest="250"
+                                   HorizontalOptions="Fill"
+                                   VerticalOptions="Fill"
+                                   Keyboard="Text"
+                                   Placeholder="Email"
+                                   FontFamily="LB"
+                                   FontSize="16">
+                            <FillEntry.Behaviors>
+                                <!-- Validator -->
+                                <EmailValidatorBehavior IsValid="{Binding IsValid}"
+                                                        x:Name="TVE"
+                                                        ValidColor="{StaticResource Gray500}"
+                                                        InValidColor="#FFFC8F64"/>
+                            </FillEntry.Behaviors>
+                        </FillEntry>
+                        <Image Source="email.png"
+                               WidthRequest="32"
+                               HeightRequest="32">
+                            <Image.Behaviors>
+                                <Toolkit:IconTintColorBehavior TintColor="{StaticResource Gray500}"/>
+                            </Image.Behaviors>
+                        </Image>
+                    </FlexLayout>
                 </Border>
                 <!-- Password -->
                 <Border Stroke="Gray"
@@ -133,23 +203,31 @@
                         <RoundRectangle CornerRadius="0,0,10,10"/>
                     </Border.StrokeShape>
                     <!-- Container -->
-                    <HorizontalStackLayout Padding="10"
-                                           VerticalOptions="Center"
-                                           HorizontalOptions="Fill">
+                    <FlexLayout Direction="Row"
+                                JustifyContent="SpaceBetween"
+                                AlignItems="Center"
+                                Padding="10"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Fill">
                         <!-- Entry Password -->
                         <FillEntry x:Name="FP"
-                                   Text="{Binding Password}"
+                                   Text="{Binding Request.Password}"
+                                   TextColor="{StaticResource Gray500}"
+                                   Margin="0,20"
+                                   IsPassword="True"
                                    WidthRequest="250"
                                    HorizontalOptions="Fill"
-                                   IsPassword="False"
-                                   Placeholder="Password"
-                                   FontFamily="LR"
-                                   FontSize="16"
-                                   TextColor="{StaticResource Gray100}">
+                                   VerticalOptions="Fill"
+                                   Keyboard="Text"
+                                   Placeholder="Password | 8 chars, digits, numbers"
+                                   FontFamily="LB"
+                                   FontSize="16">
                             <FillEntry.Behaviors>
-                                <Toolkit:TextValidationBehavior MinimumLength="8"
-                                                                IsValid="{Binding IsValid,Mode=TwoWay}"
-                                                                x:Name="FBN"/>
+                                <!-- Validator -->
+                                <PasswordValidatorBehavior IsValid="{Binding IsValid}"
+                                                           x:Name="TVP"
+                                                           ValidColor="{StaticResource Gray500}"
+                                                           InValidColor="#FFFC8F64"/>
                             </FillEntry.Behaviors>
                         </FillEntry>
                         <Image Source="password.png"
@@ -159,7 +237,7 @@
                                 <Toolkit:IconTintColorBehavior TintColor="{StaticResource Gray500}"/>
                             </Image.Behaviors>
                         </Image>
-                    </HorizontalStackLayout>
+                    </FlexLayout>
                 </Border>
             </VerticalStackLayout>
             <!-- Options -->
@@ -176,6 +254,7 @@
                    Text="Gracias por aceptar los términos y condiciones"/>
             <!-- Sign Button -->
             <Button MaximumWidthRequest="350"
+                    IsEnabled="True"
                     Text="Sign Up"
                     Command="{Binding SignUpCommand}"
                     TextColor="{StaticResource DimGrey}"

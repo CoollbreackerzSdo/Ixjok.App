@@ -9,46 +9,39 @@ public sealed partial class SignUpScreen : ContentPage
     {
         InitializeComponent();
         BindingContext = model;
+        TVB.ValidationChange += UpdateValidation;
+        TVE.ValidationChange += UpdateValidation;
+        TVP.ValidationChange += UpdateValidation;
     }
+    public void UpdateValidation(bool value) => ((SignUpViewModel)BindingContext).IsValid = value;
 }
-public sealed partial class SignUpViewModel(INavigationManager navigation, IWorkSpace work, IAuthentication authentication) : BaseViewModel(navigation)
+public sealed partial class SignUpViewModel(INavigationManager navigation, IAuthentication authentication) : BaseViewModel(navigation)
 {
     [RelayCommand]
     private async Task GotoBack() => await _navigation.BackAsync();
     [RelayCommand]
     private async Task SignUpAsync()
     {
-        NetworkAccess accessType = Connectivity.Current.NetworkAccess;
-        if (accessType != NetworkAccess.Internet)
+        if (!IsValid)
         {
-            await Toast.Make("Sin Internet").Show();
+            _ = Toast.Make("Credenciales Invalidas").Show();
             return;
         }
-        var result = await authentication.SignUpAsync(new(UserName, Password));
+        var result = await authentication.SignUpAsync(Request);
         if (result.IsSuccess)
         {
-            _ = Toast.Make("Sección Iniciada").Show();
-            await work.ChangeModeAsync(StorageMode.Cloud);
+            _ = Toast.Make("Registro Exitoso", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
             await _navigation.GotoHomeAsync();
             return;
         }
-        switch (result.Status)
+        _ = result.Status switch
         {
-            case ResultStatus.BadRequest:
-                await Toast.Make("Credenciales Invalidas").Show();
-                break;
-            case ResultStatus.Conflict:
-                await Toast.Make("Usuario Existente").Show();
-                break;
-            default:
-                await Toast.Make("ErrorX010101").Show();
-                break;
-        }
+            ResultStatus.Conflict => Toast.Make("Usuario Registrado").Show(),
+            ResultStatus.BadRequest => Toast.Make("Credenciales Invalidas").Show(),
+            _ => Toast.Make("Error Externo").Show(),
+        };
     }
+    public SignUpRequest Request { get; init; } = new();
     [ObservableProperty]
-    public partial string UserName { get; set; }
-    [ObservableProperty]
-    public partial string Password { get; set; }
-    [ObservableProperty]
-    public partial bool IsValid { get; set; } = false;
+    public partial bool IsValid { get; set; }
 }

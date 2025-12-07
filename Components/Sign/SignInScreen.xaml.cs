@@ -9,9 +9,12 @@ public sealed partial class SignInScreen : ContentPage
     {
         InitializeComponent();
         BindingContext = model;
+        TVB.ValidationChange += UpdateValidation;
+        TVP.ValidationChange += UpdateValidation;
     }
+    public void UpdateValidation(bool value) => ((SignInViewModel)BindingContext).IsValid = value;
 }
-public sealed partial class SignInViewModel(INavigationManager navigation, IWorkSpace work, IAuthentication authentication) : BaseViewModel(navigation)
+public sealed partial class SignInViewModel(INavigationManager navigation, IAuthentication authentication) : BaseViewModel(navigation)
 {
     [RelayCommand]
     private async Task GotoBack() => await _navigation.BackAsync();
@@ -20,37 +23,26 @@ public sealed partial class SignInViewModel(INavigationManager navigation, IWork
     [RelayCommand]
     private async Task SignInAsync()
     {
-        NetworkAccess accessType = Connectivity.Current.NetworkAccess;
-        if (accessType != NetworkAccess.Internet)
+        if (!IsValid)
         {
-            await Toast.Make("Sin Internet").Show();
+            _ = Toast.Make("Credenciales Invalidas").Show();
             return;
         }
-        var result = await authentication.SignInAsync(new(UserName, Password));
+        var result = await authentication.SignInAsync(Request);
         if (result.IsSuccess)
         {
-            _ = Toast.Make("Sección Iniciada", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
-            await work.ChangeModeAsync(StorageMode.Cloud);
-            await _navigation.BackAsync();
+            _ = Toast.Make("Session Exitosa", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
+            await _navigation.GotoHomeAsync();
             return;
         }
-        switch (result.Status)
+        _ = result.Status switch
         {
-            case ResultStatus.BadRequest:
-                await Toast.Make("Contraseña Invalida").Show();
-                break;
-            case ResultStatus.NotFound:
-                await Toast.Make("No Registrado").Show();
-                break;
-            default:
-                await Toast.Make("ErrorX010101").Show();
-                break;
-        }
+            ResultStatus.NotFound => Toast.Make("No Registrado").Show(),
+            ResultStatus.BadRequest => Toast.Make("Credenciales Invalidas").Show(),
+            _ => Toast.Make("Error Externo").Show(),
+        };
     }
-    [ObservableProperty]
-    public partial string UserName { get; set; }
-    [ObservableProperty]
-    public partial string Password { get; set; }
+    public SignInRequest Request { get; init; } = new();
     [ObservableProperty]
     public partial bool IsValid { get; set; }
 }
