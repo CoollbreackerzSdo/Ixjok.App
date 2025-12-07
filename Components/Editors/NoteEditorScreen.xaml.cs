@@ -10,56 +10,32 @@ public partial class NoteEditorScreen : ContentPage
         BindingContext = model;
     }
 }
-public sealed partial class EditorNoteViewModel(IWorkSpace work, INavigationManager navigation) : BaseViewModel(navigation), IQueryAttributable
+public sealed partial class EditorNoteViewModel(IDynamicStorage storage, INavigationManager navigation) : BaseViewModel(navigation), IQueryAttributable
 {
     [RelayCommand]
-    private async Task Back() => await _navigation.BackAsync();
+    private async Task BackAsync() => await _navigation.BackAsync();
     [RelayCommand]
-    private async Task Save()
+    private async Task SaveAsync()
     {
-        if (string.IsNullOrWhiteSpace(Title)) return;
-        else if (BaseUpdateModel is null)
+        if (IsUpdate)
         {
-            var result = await work.NoteRepository.AddAsync(new()
-            {
-                Content = Content!,
-                Title = Title!,
-                Registration = DateTimeOffset.Now
-            });
-            if (result.IsSuccess)
-            {
-                _ = Toast.Make("Nota Guardada").Show();
-                await _navigation.BackAsync();
-            }
-            else if (result.Status == ResultStatus.TeaBreak && work.Mode == StorageMode.Cloud)
-            {
-                _ = Toast.Make("Error al conectar con el servidor").Show();
-            }
+            _ = _storage.UpdateAsync(Model);
+            await BackAsync();
+            return;
         }
-        else
-        {
-            BaseUpdateModel.Content = Content ?? string.Empty;
-            BaseUpdateModel.Title = Title;
-            var result = await work.NoteRepository.UpdateAsync(BaseUpdateModel);
-            if (result.IsSuccess)
-            {
-                _ = Toast.Make("Cambios Guardados", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
-                await _navigation.BackAsync();
-            }
-        }
+        await _storage.AddAsync(Model);
+        await BackAsync();
     }
     public async void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (query.TryGetValue(nameof(BaseUpdateModel), out var model) && model is NoteModel value)
+        if (query.TryGetValue(nameof(Model), out var model) && model is NoteModel value)
         {
-            Content = value.Content;
-            Title = value.Title;
-            BaseUpdateModel = value;
+            Model = value;
+            IsUpdate = true;
         }
     }
-    public NoteModel? BaseUpdateModel { get; set; }
+    private bool IsUpdate { get; set; }
     [ObservableProperty]
-    public partial string? Title { get; set; }
-    [ObservableProperty]
-    public partial string? Content { get; set; }
+    public partial NoteModel Model { get; set; } = new();
+    private readonly IDynamicStorage _storage = storage;
 }

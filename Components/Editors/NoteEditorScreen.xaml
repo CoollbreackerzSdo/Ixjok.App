@@ -45,7 +45,7 @@
         <VerticalStackLayout Spacing="10"
                              Grid.Row="1"
                              VerticalOptions="Fill">
-            <FillEntry Text="{Binding Title}"
+            <FillEntry Text="{Binding Model.Title}"
                        Placeholder="Titulo"
                        x:Name="TitleEntry"
                        HorizontalTextAlignment="Start"
@@ -53,7 +53,7 @@
                        FontFamily="SS"
                        FontSize="26">
             </FillEntry>
-            <FillEditor Text="{Binding Content}"
+            <FillEditor Text="{Binding Model.Content}"
                         x:Name="TitleEditor"
                         Placeholder="Redacta Tu Pensamientos"
                         HorizontalTextAlignment="Start"
