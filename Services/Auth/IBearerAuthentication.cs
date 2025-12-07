@@ -1,6 +1,6 @@
 namespace Ixjok.Services.Auth;
 
-public interface IBearerAuthentication : IAuthentication
+public interface IBearerAuthenticationHandler : IAuthentication
 {
-    string Token { get; }
+    Task<Result> SignRefreshAsync(CancellationToken token = default);
 }
