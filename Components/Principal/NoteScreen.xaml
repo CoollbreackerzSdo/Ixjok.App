@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/maui/global"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:Toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:Skia="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              x:Class="Ixjok.Components.Principal.NoteScreen"
              x:DataType="NoteViewModel"
              NavigationPage.HasNavigationBar="False"
@@ -12,7 +13,27 @@
                                    StatusBarStyle="LightContent"/>
     </ContentPage.Behaviors>
     <Grid Padding="20"
+          RowSpacing="10"
           RowDefinitions="auto,*">
+        <!-- Loading -->
+        <FlexLayout Grid.RowSpan="2"
+                    IsVisible="{Binding IsLoading}"
+                    IsEnabled="{Binding IsLoading}"
+                    BackgroundColor="{StaticResource DimGrey}"
+                    SafeAreaEdges="None"
+                    ZIndex="10"
+                    HorizontalOptions="Fill"
+                    Direction="Column"
+                    JustifyContent="Center"
+                    AlignItems="Center"
+                    VerticalOptions="Fill">
+            <Skia:SKLottieView RepeatCount="-1"
+                               IsAnimationEnabled="{Binding IsLoading}"
+                               RepeatMode="Restart"
+                               HeightRequest="400"
+                               WidthRequest="400"
+                               Source="Polar.json"/>
+        </FlexLayout>
         <!-- Header -->
         <FlexLayout Grid.Row="0"
                     Direction="Row"
@@ -65,18 +86,22 @@
                      HorizontalOptions="Center"
                      VerticalOptions="Fill">
             <CollectionView ItemSizingStrategy="MeasureFirstItem"
+                            MaximumWidthRequest="380"
                             ItemsSource="{Binding Notes}">
                 <!-- Element Design -->
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="NoteModel">
                         <Border HeightRequest="300"
-                                Padding="0"
                                 StrokeThickness="0"
                                 BackgroundColor="{StaticResource PeachFuzz}"
                                 WidthRequest="180">
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="10"/>
                             </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type NoteViewModel}},Path=GotoUpdateCommand}"
+                                                      CommandParameter="{Binding .}"/>
+                            </Border.GestureRecognizers>
                             <!-- Element Container -->
                             <Border HorizontalOptions="Fill"
                                     StrokeThickness="0"
@@ -94,40 +119,25 @@
                                     <Border Grid.Row="0"
                                             VerticalOptions="Center"
                                             StrokeThickness="0"
+                                            Padding="10"
                                             BackgroundColor="{StaticResource PeachFuzz}"
                                             HeightRequest="40"
                                             HorizontalOptions="End">
                                         <Border.StrokeShape>
                                             <RoundRectangle CornerRadius="0,0,60,0"/>
                                         </Border.StrokeShape>
-                                        <HorizontalStackLayout Spacing="10"
-                                                               Margin="0,10"
-                                                               Padding="10,0"
-                                                               HorizontalOptions="End"
-                                                               VerticalOptions="Center">
-                                            <Image Source="edit.png"
-                                                   WidthRequest="22"
-                                                   HeightRequest="22">
-                                                <Image.Behaviors>
-                                                    <Toolkit:IconTintColorBehavior TintColor="White"/>
-                                                </Image.Behaviors>
-                                                <Image.GestureRecognizers>
-                                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type NoteViewModel}},Path=GotoUpdateCommand}"
-                                                                          CommandParameter="{Binding .}"/>
-                                                </Image.GestureRecognizers>
-                                            </Image>
-                                            <Image Source="cancel.png"
-                                                   WidthRequest="22"
-                                                   HeightRequest="22">
-                                                <Image.Behaviors>
-                                                    <Toolkit:IconTintColorBehavior TintColor="White"/>
-                                                </Image.Behaviors>
-                                                <Image.GestureRecognizers>
-                                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type NoteViewModel}},Path=DeleteCommand}"
-                                                                          CommandParameter="{Binding .}"/>
-                                                </Image.GestureRecognizers>
-                                            </Image>
-                                        </HorizontalStackLayout>
+                                        <!-- Delete -->
+                                        <Image Source="cancel.png"
+                                               WidthRequest="22"
+                                               HeightRequest="22">
+                                            <Image.Behaviors>
+                                                <Toolkit:IconTintColorBehavior TintColor="White"/>
+                                            </Image.Behaviors>
+                                            <Image.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type NoteViewModel}},Path=DeleteCommand}"
+                                                                      CommandParameter="{Binding .}"/>
+                                            </Image.GestureRecognizers>
+                                        </Image>
                                     </Border>
                                     <!-- Tile -->
                                     <Label Margin="0,10,20,0"
