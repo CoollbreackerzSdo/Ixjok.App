@@ -155,6 +155,7 @@
                                    Text="{Binding Request.Password}"
                                    Margin="0,20"
                                    WidthRequest="250"
+                                   IsPassword="True"
                                    HorizontalOptions="Fill"
                                    VerticalOptions="Fill"
                                    Keyboard="Text"
