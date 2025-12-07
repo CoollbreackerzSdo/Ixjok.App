@@ -1,9 +1,9 @@
-namespace Ixjok.Tools;
+namespace Ixjok.Helpers;
 
 public enum StorageMode
 {
     Database,
-    Json,
     Cloud,
+    Full,
     Default
 }
