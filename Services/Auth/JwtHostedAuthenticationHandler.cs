@@ -46,7 +46,13 @@ public sealed partial class JwtHostedAuthenticationHandler : IBearerAuthenticati
             _transport = null;
             SecureStorage.Default.Remove(KeyStorageHelper.AuthKey);
             _client.DefaultRequestHeaders.Authorization = null;
-            // _config.CurrentMode = StorageMode.Database;
+            AuthenticationChange.Invoke(AuthenticationState.DisConnected);
+            return Result.Success();
+        }
+        else if (result.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            SecureStorage.Default.Remove(KeyStorageHelper.AuthKey);
+            _client.DefaultRequestHeaders.Authorization = null;
             AuthenticationChange.Invoke(AuthenticationState.DisConnected);
             return Result.Success();
         }

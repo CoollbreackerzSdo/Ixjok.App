@@ -48,8 +48,8 @@ public sealed partial class NoteViewModel : BaseViewModel, IDisposable
             await _navigation.GoToAsync(nameof(SignInScreen));
             return;
         }
-        _ = Toast.Make("Session Cerrada", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
-        await _authentication.SignOutAsync();
+        var result = await _authentication.SignOutAsync();
+        _ = result.IsSuccess ? Toast.Make("Session Cerrada", CommunityToolkit.Maui.Core.ToastDuration.Long).Show() : Toast.Make("Error Externo", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
     }
     [RelayCommand]
     private async Task GotoUpdateAsync(NoteModel model)
@@ -63,18 +63,18 @@ public sealed partial class NoteViewModel : BaseViewModel, IDisposable
     private async Task GotoAddAsync() => await _navigation.GoToAsync(nameof(NoteEditorScreen));
     private async void UpdateCloudMode(AuthenticationState state)
     {
+        IsLoading = true;
         if (state == AuthenticationState.Connected)
         {
-            await InitAsync();
             CloudStatusImage = "cloud_enable.png";
             IsConnected = true;
         }
         else if (state == AuthenticationState.DisConnected)
         {
-            await InitAsync();
             CloudStatusImage = "cloud_disable.png";
             IsConnected = false;
         }
+        IsLoading = false;
     }
     private async void UpdateEmptyVisibility(object? sender, NotifyCollectionChangedEventArgs e) => IsNotEmpty = Notes.Any();
     private void Dispose(bool disposing)

@@ -23,23 +23,17 @@ public sealed partial class DynamicStorage : IDynamicStorage
 
     private async Task InitAsync()
     {
-        if(_connection is not null) return;
+        if (_connection is not null) return;
         _connection = new(ConfigHelper.SqlDatabasePath, ConfigHelper.SqlFlags);
-        try
+        var result = await _connection.CreateTableAsync<NoteSqlDecorator>();
+        if (result == CreateTableResult.Migrated)
         {
-            var result = await _connection.CreateTableAsync<NoteSqlDecorator>();
-            if (result == CreateTableResult.Migrated)
-            {
-                Notes = new(_connection!.Table<NoteSqlDecorator>().Where(x => x.Status != (int)NoteState.Deleted).OrderBy(x => x.Registration).ToArrayAsync().GetAwaiter().GetResult().Select(x => x.ToModel()));
-            }
-        }
-        catch (Exception)
-        {
+            Notes = new(_connection!.Table<NoteSqlDecorator>().Where(x => x.Status != (int)NoteState.Deleted).OrderBy(x => x.Registration).ToArrayAsync().GetAwaiter().GetResult().Select(x => x.ToModel()));
         }
     }
     public async Task RemoveAsync(NoteModel model, CancellationToken token = default)
     {
-        await InitAsync();
+        // await InitAsync();
         var deco = model.ToDecorator();
         if (await _authentication.AuthenticationStateAsync(token) && (await _hostedNoteRepository.DeleteAsync(model.Id!.Value, token)).IsSuccess)
             deco.Status = (int)NoteState.Cloud;
@@ -48,7 +42,7 @@ public sealed partial class DynamicStorage : IDynamicStorage
     }
     public async Task AddAsync(NoteModel model, CancellationToken token = default)
     {
-        await InitAsync();
+        // await InitAsync();
         var deco = model.ToDecorator();
         if (await _authentication.AuthenticationStateAsync(token) && (await _hostedNoteRepository.AddAsync(model, token)).IsSuccess)
             deco.Status = (int)NoteState.Cloud;
@@ -63,7 +57,7 @@ public sealed partial class DynamicStorage : IDynamicStorage
 
     public async Task UpdateAsync(NoteModel model, CancellationToken token = default)
     {
-        await InitAsync();
+        // await InitAsync();
         var deco = model.ToDecorator();
         deco.Status = (int)NoteState.Update;
         if (await _authentication.AuthenticationStateAsync(token) && (await _hostedNoteRepository.UpdateAsync(model, token)).IsSuccess)
@@ -77,6 +71,9 @@ public sealed partial class DynamicStorage : IDynamicStorage
             if (disposing)
             {
                 Notes.Clear();
+#pragma warning disable CS8601 // Posible asignación de referencia nula
+                _authentication.AuthenticationChange -= Connectivity;
+#pragma warning restore CS8601 // Posible asignación de referencia nula
             }
         }
     }
