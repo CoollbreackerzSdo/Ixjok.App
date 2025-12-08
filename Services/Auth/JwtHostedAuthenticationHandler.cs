@@ -5,20 +5,39 @@ using Ixjok.Tools.Common.Models.Bearer;
 
 namespace Ixjok.Services.Auth;
 
+/// <summary>
+/// Manejador de autenticación JWT que se comunica con un servidor remoto para operaciones de autenticación.
+/// Implementa <see cref="IBearerAuthenticationHandler"/> y <see cref="IDisposable"/> para gestionar tokens Bearer y recursos.
+/// </summary>
 public sealed partial class JwtHostedAuthenticationHandler : IBearerAuthenticationHandler, IDisposable
 {
+    /// <summary>
+    /// Inicializa una nueva instancia de <see cref="JwtHostedAuthenticationHandler"/>.
+    /// </summary>
+    /// <param name="client">Cliente HTTP para comunicarse con el servidor de autenticación.</param>
     public JwtHostedAuthenticationHandler(HttpClient client)
     {
         _client = client;
         AuthenticationChange = (_) => { };
         InitAsync().ConfigureAwait(false);
     }
+    /// <summary>
+    /// Obtiene el estado actual de autenticación del usuario.
+    /// </summary>
+    /// <param name="token">Token de cancelación para la operación asíncrona.</param>
+    /// <returns>Un booleano que indica si el usuario está autenticado.</returns>
     public async Task<bool> AuthenticationStateAsync(CancellationToken token = default)
     {
         if (_transport is null) return false;
         await SignRefreshAsync(token);
         return _transport is not null;
     }
+    /// <summary>
+    /// Inicia sesión con credenciales de usuario.
+    /// </summary>
+    /// <param name="request">Solicitud de inicio de sesión con nombre de usuario y contraseña.</param>
+    /// <param name="token">Token de cancelación para la operación asíncrona.</param>
+    /// <returns>Un resultado que indica éxito o error de la operación.</returns>
     public async Task<Result> SignInAsync(SignInRequest request, CancellationToken token = default)
     {
         var result = await _client.PostAsJsonAsync("auth/sign-in", request, token);
@@ -38,6 +57,11 @@ public sealed partial class JwtHostedAuthenticationHandler : IBearerAuthenticati
             _ => Result.TeaBreak()
         };
     }
+    /// <summary>
+    /// Cierra sesión y limpia los datos de autenticación almacenados.
+    /// </summary>
+    /// <param name="token">Token de cancelación para la operación asíncrona.</param>
+    /// <returns>Un resultado que indica éxito o error de la operación.</returns>
     public async Task<Result> SignOutAsync(CancellationToken token = default)
     {
         var result = await _client.GetAsync("auth/sign-out", token);
@@ -58,6 +82,12 @@ public sealed partial class JwtHostedAuthenticationHandler : IBearerAuthenticati
         }
         return Result.NoFound();
     }
+    /// <summary>
+    /// Registra un nuevo usuario.
+    /// </summary>
+    /// <param name="request">Solicitud de registro con correo electrónico, nombre de usuario y contraseña.</param>
+    /// <param name="token">Token de cancelación para la operación asíncrona.</param>
+    /// <returns>Un resultado que indica éxito o error de la operación.</returns>
     public async Task<Result> SignUpAsync(SignUpRequest request, CancellationToken token = default)
     {
         var result = await _client.PostAsJsonAsync("auth/sign-up", request, token);
@@ -78,6 +108,11 @@ public sealed partial class JwtHostedAuthenticationHandler : IBearerAuthenticati
             _ => Result.TeaBreak()
         };
     }
+    /// <summary>
+    /// Renueva el token de acceso si ha expirado, verificando el token de renovación.
+    /// </summary>
+    /// <param name="token">Token de cancelación para la operación asíncrona.</param>
+    /// <returns>Un resultado que indica éxito o error de la operación de renovación.</returns>
     public async Task<Result> SignRefreshAsync(CancellationToken token = default)
     {
         if (_transport is null) return Result.NoContent();
@@ -98,6 +133,10 @@ public sealed partial class JwtHostedAuthenticationHandler : IBearerAuthenticati
         AuthenticationChange.Invoke(AuthenticationState.DisConnected);
         return Result.NoFound();
     }
+    /// <summary>
+    /// Carga los datos de autenticación almacenados en el almacenamiento seguro del dispositivo.
+    /// </summary>
+    /// <returns>Una tarea que representa la operación asíncrona.</returns>
     private async Task InitAsync()
     {
         var data = await SecureStorage.Default.GetAsync(KeyStorageHelper.AuthKey);
@@ -106,6 +145,10 @@ public sealed partial class JwtHostedAuthenticationHandler : IBearerAuthenticati
         _client.DefaultRequestHeaders.Authorization = new("bearer", _transport.Value.Token);
         AuthenticationChange.Invoke(AuthenticationState.Connected);
     }
+    /// <summary>
+    /// Libera los recursos gestionados por esta instancia.
+    /// </summary>
+    /// <param name="disposing">Indica si se debe liberar recursos administrados.</param>
     private void Dispose(bool disposing)
     {
         if (!_disposedValue)
@@ -117,13 +160,28 @@ public sealed partial class JwtHostedAuthenticationHandler : IBearerAuthenticati
             _disposedValue = true;
         }
     }
+    /// <summary>
+    /// Libera todos los recursos asociados a esta instancia.
+    /// </summary>
     public void Dispose()
     {
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
+    /// <summary>
+    /// Obtiene o establece el token de transporte actual.
+    /// </summary>
     private TokenTransport? _transport { get; set; }
+    /// <summary>
+    /// Evento que se dispara cuando el estado de autenticación cambia.
+    /// </summary>
     public Action<AuthenticationState> AuthenticationChange { get; set; }
+    /// <summary>
+    /// Cliente HTTP para comunicarse con el servidor de autenticación.
+    /// </summary>
     private readonly HttpClient _client;
+    /// <summary>
+    /// Indica si los recursos han sido liberados.
+    /// </summary>
     private bool _disposedValue;
 }
