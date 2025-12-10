@@ -1,17 +1,17 @@
-global using KeyId = Ixjok.Tools.Common.Models.EntityKey<System.Guid>;
 global using CommunityToolkit.Maui;
-global using CommunityToolkit.Mvvm;
-global using Ixjok;
-global using Ixjok.Helpers;
-global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Maui.Alerts;
-global using Ixjok.Services.Repository;
-global using Ixjok.Services.Navigation;
-global using Ixjok.Components.Editors;
-global using Ixjok.Services.Media;
+global using CommunityToolkit.Mvvm;
+global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Mvvm.Input;
+global using Ixjok;
+global using Ixjok.Components.Editors;
+global using Ixjok.Helpers;
+global using Ixjok.Services.Media;
+global using Ixjok.Services.Navigation;
+global using Ixjok.Services.Repository;
 global using Ixjok.Tools.Common.Models;
 global using Ixjok.Tools.Result;
+global using KeyId = Ixjok.Tools.Common.Models.EntityKey<System.Guid>;
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/dotnet/maui/global", "Ixjok.Pages")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/dotnet/maui/global", "Ixjok.Components")]
 [assembly: XmlnsDefinition("http://schemas.microsoft.com/dotnet/maui/global", "Ixjok.Components.Principal")]
