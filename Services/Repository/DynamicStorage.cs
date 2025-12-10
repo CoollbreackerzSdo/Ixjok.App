@@ -141,6 +141,7 @@ public sealed partial class DynamicStorage : IDynamicStorage
     public async Task<Result> ConnectToHostAsync(CancellationToken token = default)
     {
         Notes.Clear();
+        await _connection!.DeleteAllAsync<NoteSqlDecorator>();
         await foreach (var item in _hostedNoteRepository.GetAllAsync(token))
         {
             var deco = item.ToDecorator();
