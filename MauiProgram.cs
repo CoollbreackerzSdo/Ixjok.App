@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui.Markup;
+using Microsoft.Extensions.Logging;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace Ixjok;
@@ -19,6 +20,7 @@ public static class MauiProgram
                 fonts.AddFont("StackSansNotch-Bold.ttf", "SB");
                 fonts.AddFont("StackSansNotch-SemiBold.ttf", "SS");
             }).UseMauiCommunityToolkit()
+            .UseMauiCommunityToolkitMarkup()
             .ApplyConfiguration()
             .Services
             .AddScreens()
